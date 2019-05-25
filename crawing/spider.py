@@ -10,9 +10,13 @@ from selenium.common.exceptions import ElementNotInteractableException, NoSuchEl
 
 import time
 import parsing.app_page_parse as parsing_util
+import re
 
 import urllib
+import logging
+
 from multiprocessing.dummy import Pool as ThreadPool
+import os
 
 def get_reviews_data(url):
     try:
@@ -68,58 +72,63 @@ def get_app_listing_id(url):
     return (str(url).split('listingId=')[1])
 
 # Get the app specific data and the data in the overview tab of the app page
-def get_app_data(url):
-
+def get_app_data(input):
     # Get the information from the app page top section
-    child_html = urlopen(url)
-    child_soup = BeautifulSoup(child_html, 'lxml')
-    app_page_title = child_soup.title
-    app_listing_id =  get_app_listing_id(url)
-    app_details = parsing_util.parse_app_page_data(url)
-    app_meta_details = ",".join([str(app_page_title),app_listing_id,url])
+    category_url = input['category_url']
+    logger = input['logger']
+    print(category_url)
+    child_url_list = get_category_apps_list(category_url)
+    for url in child_url_list:
+        child_html = urlopen(url)
+        child_soup = BeautifulSoup(child_html, 'lxml')
+        if child_soup:
+            app_page_title = re.sub('<[^>]*>', '', str(child_soup.title))
+            app_listing_id =  get_app_listing_id(url)
+            app_details = parsing_util.parse_app_page_data(child_soup)
+            app_meta_details = ",".join([str(app_page_title),app_listing_id,url])
 
-    # Get the information for the overview tab in the app page by making a GET call
-    child_overview_url = constants.app_overview_tab_base_url+app_listing_id
-    child_overview_html = urlopen(child_overview_url)
-    child_overview_soup = BeautifulSoup(child_overview_html, 'lxml')
-    app_overview_details = parsing_util.parse_app_page_overview_tab(child_overview_soup)
-    final_app_details = ",".join(app_meta_details, app_details, app_overview_details)
-    return final_app_details
+            # Get the information for the overview tab in the app page by making a GET call
+            # child_overview_url = constants.app_overview_tab_base_url+app_listing_id
+            # child_overview_html = urlopen(child_overview_url)
+            # child_overview_soup = BeautifulSoup(child_overview_html, 'lxml')
+            # app_overview_details = parsing_util.parse_app_page_overview_tab(child_overview_soup)
+            app_overview_details = ""
+            final_app_details = ",".join([app_meta_details, app_details, app_overview_details])
+            print(final_app_details)
+            write_app_details_to_file(final_app_details, logger)
 
 def initialize_output_file():
     filename =str(datetime.datetime.now())+".csv"
+    logger = initialize_logger(filename)
+    os.environ['output_file'] = filename
     f = open(filename, 'w')
     f.write(constants.output_file_header)
     f.close()
+    return logger
+
+def write_app_details_to_file(output_line, logger):
+    if logger:
+        logger.info(output_line)
+
+#Using logger for file operations to make them thread-safe
+def initialize_logger(filename):
+    logpath = filename
+    logger = logging.getLogger('log')
+    logger.setLevel(logging.INFO)
+    ch = logging.FileHandler(logpath)
+    ch.setFormatter(logging.Formatter('%(message)s'))
+    logger.addHandler(ch)
+    return logger
 
 if __name__ == '__main__':
-    url_list = constants.category_url_dict.values()
+    category_url_list = constants.category_url_dict.values()
     pool = ThreadPool(3)
-    pool.map(urllib.request.urlopen, url_list)
-    initialize_output_file()
-
-
-urls = [
-  'http://www.python.org',
-  'http://www.python.org/about/',
-  'http://www.onlamp.com/pub/a/python/2003/04/17/metaclasses.html',
-  'http://www.python.org/doc/',
-  'http://www.python.org/download/',
-  'http://www.python.org/getit/',
-  'http://www.python.org/community/',
-  'https://wiki.python.org/moin/',
-]
-
-# make the Pool of workers
-pool = ThreadPool(3)
-
-# open the urls in their own threads
-# and return the results
-results = pool.map(urllib.request.urlopen, urls)
-
-# close the pool and wait for the work to finish
-pool.close()
-pool.join()
-
-for result in results:
-    print(result.url)
+    logger = initialize_output_file()
+    print(os.environ['output_file'])
+    input_list = [{'category_url': url, 'logger': logger} for url in category_url_list]
+    results = pool.map(get_app_data, input_list)
+    pool.close()
+    pool.join()
+    for result in results:
+        if result is not None:
+            print(result['url'])

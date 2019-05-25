@@ -28,18 +28,19 @@ def parse_reviews_data(soup):
     print(soup)
 
 def parse_app_page_data(soup):
-    price_raw = str(str(soup.find('p', attrs={'class': 'appx-pricing-detail-header'})))
+    price_raw = str(soup.find('p', {'class': 'appx-pricing-detail-header'}))
     price = re.search('j_id693\">(.*)</span>', price_raw)
     if price is None:
         price = re.search('planCharges\">(.*)</span>', price_raw)
     price = price.group(1)
-    number_of_reviews_raw = str(str(soup.find('span', attrs={'id': 'appxListingDetailPageId:AppxLayout:j_id715:j_id716:j_id723'})))
+    price = re.sub('<[^>]*>', '', price)
+    number_of_reviews_raw = str(soup.find('span', attrs={'id': 'appxListingDetailPageId:AppxLayout:j_id715:j_id716:j_id723'}))
     number_of_reviews = re.search('j_id723\">(.*)</span>', number_of_reviews_raw).group(1)
-    review_stars_raw = str(str(soup.find('span', attrs={'id':'appxListingDetailPageId:AppxLayout:j_id715:j_id716:j_id719'})))
+    review_stars_raw = str(soup.find('span', attrs={'id':'appxListingDetailPageId:AppxLayout:j_id715:j_id716:j_id719'}))
     review_stars = re.search('appx-rating-stars-(.*)\" id', review_stars_raw)
     if review_stars is not None:
         review_stars = review_stars.group(1)
-    listed_on_raw =  str(str(soup.find('div', attrs={'class': 'appx-detail-section-first-listed'})))
+    listed_on_raw =  str(soup.find('div', attrs={'class': 'appx-detail-section-first-listed'}))
     listed_on = re.search('<p>(.*)</p>', listed_on_raw).group(1)
     latest_release_raw = str(soup.find('span', attrs={'id': 'appxListingDetailPageId:AppxLayout:j_id732'}))
     latest_release = re.search('<p>(.*)</p>', latest_release_raw).group(1)
@@ -47,6 +48,7 @@ def parse_app_page_data(soup):
     categories = re.search('<strong>(.*)</strong>', categories_raw).group(1)
     descrition_raw = str(soup.find('div', attrs={'class':'appx-detail-section-description'}))
     description = re.search('<p>(.*)</p>', descrition_raw).group(1)
-    line_entry = ",".join([price, number_of_reviews, review_stars, listed_on, latest_release, categories, description, "\n"])
+    line_entry = ",".join([str(price), str(number_of_reviews), str(review_stars), str(listed_on)
+                              , str(latest_release), str(categories), str(description)])
     return line_entry
 
