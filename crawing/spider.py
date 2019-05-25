@@ -12,7 +12,6 @@ import time
 import parsing.app_page_parse as parsing_util
 import re
 
-import urllib
 import logging
 
 from multiprocessing.dummy import Pool as ThreadPool
@@ -35,8 +34,6 @@ def get_reviews_data(url):
                 break
             except NoSuchElementException as e:
                 break
-        soup = BeautifulSoup(driver.page_source, 'lxml')
-        print(soup)
     except NoSuchElementException as e:
         print(e)
     finally:
@@ -71,12 +68,21 @@ def get_category_apps_list(url):
 def get_app_listing_id(url):
     return (str(url).split('listingId=')[1])
 
+def get_app_overview_details(app_listing_id):
+    # Get the information for the overview tab in the app page by making a GET call
+    if app_listing_id:
+        child_overview_url = constants.app_overview_tab_base_url+app_listing_id
+        child_overview_html = urlopen(child_overview_url)
+        child_overview_soup = BeautifulSoup(child_overview_html, 'lxml')
+        app_overview_details = parsing_util.parse_app_page_overview_tab(child_overview_soup)
+        return app_overview_details
+    else: return None
+
 # Get the app specific data and the data in the overview tab of the app page
 def get_app_data(input):
     # Get the information from the app page top section
     category_url = input['category_url']
     logger = input['logger']
-    print(category_url)
     child_url_list = get_category_apps_list(category_url)
     for url in child_url_list:
         child_html = urlopen(url)
@@ -86,15 +92,8 @@ def get_app_data(input):
             app_listing_id =  get_app_listing_id(url)
             app_details = parsing_util.parse_app_page_data(child_soup)
             app_meta_details = ",".join([str(app_page_title),app_listing_id,url])
-
-            # Get the information for the overview tab in the app page by making a GET call
-            # child_overview_url = constants.app_overview_tab_base_url+app_listing_id
-            # child_overview_html = urlopen(child_overview_url)
-            # child_overview_soup = BeautifulSoup(child_overview_html, 'lxml')
-            # app_overview_details = parsing_util.parse_app_page_overview_tab(child_overview_soup)
-            app_overview_details = ""
+            app_overview_details = get_app_overview_details(app_listing_id)
             final_app_details = ",".join([app_meta_details, app_details, app_overview_details])
-            print(final_app_details)
             write_app_details_to_file(final_app_details, logger)
 
 def initialize_output_file():
@@ -124,11 +123,8 @@ if __name__ == '__main__':
     category_url_list = constants.category_url_dict.values()
     pool = ThreadPool(3)
     logger = initialize_output_file()
-    print(os.environ['output_file'])
     input_list = [{'category_url': url, 'logger': logger} for url in category_url_list]
-    results = pool.map(get_app_data, input_list)
+    pool.map(get_app_data, input_list)
     pool.close()
     pool.join()
-    for result in results:
-        if result is not None:
-            print(result['url'])
+

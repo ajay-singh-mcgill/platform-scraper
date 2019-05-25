@@ -14,4 +14,7 @@ category_page_show_more_button_id = 'appx-load-more-button-id'
 category_page_app_matrix_id = 'appx-table-results'
 app_overview_tab_base_url = 'https://appexchange.salesforce.com/AppxListingDetailOverviewTab?listingId='
 output_file_header = "app_title, listing_id, url, price, number_of_reviews, review_stars, listed_on, " \
-                     "latest_release, categories, description, \n"
+                     "latest_release, categories, description, detailed_description, highlights, custom_tabs, " \
+                     "custom_objects, custom_applications, lightning_components_global,  " \
+                     "lightning_components_community_builder, lightning_components_app_builder, salesforce_edition, " \
+                     "other_system_requirements, version, first_release, languages \n"
