@@ -17,4 +17,6 @@ output_file_header = "app_title~ listing_id~ url~ price~ number_of_reviews~ revi
                      "latest_release~ categories~ description~ detailed_description~ highlights~ custom_tabs~ " \
                      "custom_objects~ custom_applications~ lightning_components_global~  " \
                      "lightning_components_community_builder~ lightning_components_app_builder~ salesforce_edition~ " \
-                     "other_system_requirements~ version~ first_release~ languages \n"
+                     "other_system_requirements~ version~ first_release~ languages~ " \
+                     "developer_founded~ developer_website~ developer_email~ developer_phone~ developer_name~ " \
+                     "developer_location~ developer_detail\n"

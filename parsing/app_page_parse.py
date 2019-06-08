@@ -13,6 +13,48 @@ def get_highlights_list(data):
         counter+=1
     return output
 
+def get_developer_details(soup):
+    developer_detail_raw = str(soup.find('p', attrs={'class':'appx-extended-detail-company-description'}))
+    developer_founded_raw = str(soup.find('div', attrs={'id':'AppxListingDetailOverviewTab:listingDetailOverviewTab:appxListingDetailOverviewTabComp:j_id326'}))
+    developer_website_raw = str(soup.find('div', attrs={'id':'AppxListingDetailOverviewTab:listingDetailOverviewTab:appxListingDetailOverviewTabComp:j_id330'}))
+    developer_email_raw= str(soup.find('div', attrs={'id':'AppxListingDetailOverviewTab:listingDetailOverviewTab:appxListingDetailOverviewTabComp:j_id332'}))
+    developer_phone_raw = str(soup.find('div', attrs={'id':'AppxListingDetailOverviewTab:listingDetailOverviewTab:appxListingDetailOverviewTabComp:j_id334'}))
+    developer_name_raw = str(soup.find('div', attrs={'class':'appx-company-name'}))
+    developer_location_raw = str(soup.find('div', attrs={'id':'AppxListingDetailOverviewTab:listingDetailOverviewTab:appxListingDetailOverviewTabComp:j_id321'}))
+
+    try:
+        developer_founded = developer_founded_raw.split('slds-truncate\">')[1].split("\n")[0]
+    except IndexError as e:
+        developer_founded = "NA"
+    try:
+        developer_website = developer_website_raw.split('_blank\">')[1].split("</a>")[0]
+    except IndexError as e:
+        developer_website = "NA"
+    try:
+        developer_email = developer_email_raw.split('mailto:')[1].split("\"")[0]
+    except IndexError as e:
+        developer_email = "NA"
+    try:
+        developer_phone = developer_phone_raw.split("appx-extended-detail-subsection-description\">")[1].split("\n")[0]
+    except IndexError as e:
+        developer_phone = "NA"
+    try:
+        developer_name = developer_name_raw.split("appx-company-name\">")[1].split("</div>")[0]
+    except IndexError as e:
+        developer_name = "NA"
+    try:
+        developer_location = developer_location_raw.split("appxListingDetailOverviewTabComp:j_id321\">")[1].split('</div>')[0]
+    except IndexError as e:
+        developer_location = "NA"
+    try:
+        developer_detail = str(re.sub('<[^>]*>', '', bleach.clean(developer_detail_raw, strip=True, strip_comments=True)))
+    except IndexError as e:
+        developer_detail = "NA"
+    developer_detail_final = "~".join([developer_founded, developer_website, developer_email, developer_phone, developer_name,
+                                       developer_location, developer_detail])
+    developer_detail_final = developer_detail_final.replace("\n", "")
+    return developer_detail_final
+
 def parse_app_page_overview_tab(soup):
     detailed_description_raw = str(soup.find('div', attrs={'class': 'appx-extended-detail-subsection'}))
     if detailed_description_raw:
@@ -69,11 +111,21 @@ def parse_app_page_overview_tab(soup):
         first_release = first_release.split("First Release")[1].split("\n")[1]
     except IndexError as e:
         first_release = 'NA'
-    languages_raw = str(soup.find('a', attrs={'data-events':'listing-languages'}))
-    languages = re.sub('<[^>]*>', '', bleach.clean(languages_raw, strip=True, strip_comments=True))
+    languages_raw = soup.find_all('a', attrs={'data-event':'listing-languages'})
+    languages = []
+    for lan_data in languages_raw:
+        try:
+            language = bleach.clean(str(lan_data), strip=True, strip_comments=True)
+            language = re.sub('<[^>]*>', '', language).replace("\n", '').replace(" ", "").replace(",", '')
+            languages.append(language)
+        except IndexError as e:
+            continue
+
+    developer_details = get_developer_details(soup)
+
     return "~".join([detailed_description, highlights, custom_tabs, custom_objects, custom_applications, lightning_components_global,
                      lightning_components_community_builder, lightning_components_app_builder, salesforce_edition, other_system_requirements,
-                     version, first_release, languages])
+                     version, first_release, str(languages), developer_details])
 
 def parse_reviews_data(soup):
     print(soup)

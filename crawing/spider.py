@@ -34,6 +34,8 @@ def get_reviews_data(url):
                 break
             except NoSuchElementException as e:
                 break
+        soup = BeautifulSoup(driver.page_source, 'lxml')
+        print(soup)
     except NoSuchElementException as e:
         print(e)
     finally:
@@ -87,6 +89,7 @@ def get_app_data(input):
         child_url_list = get_category_apps_list(category_url)
     except NoSuchWindowException as e:
         print(e)
+    print(category_url, ":", child_url_list.__sizeof__())
     for url in child_url_list:
         child_html = urlopen(url)
         child_soup = BeautifulSoup(child_html, 'lxml')
@@ -124,10 +127,9 @@ def initialize_logger(filename):
 
 if __name__ == '__main__':
     category_url_list = constants.category_url_dict.values()
-    pool = ThreadPool(3)
+    pool = ThreadPool(4)
     logger = initialize_output_file()
     input_list = [{'category_url': url, 'logger': logger} for url in category_url_list]
     pool.map(get_app_data, input_list)
     pool.close()
     pool.join()
-
