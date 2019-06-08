@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 from selenium import webdriver
-from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
+from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException, NoSuchWindowException
 
 import time
 import parsing.app_page_parse as parsing_util
@@ -54,7 +54,6 @@ def get_category_apps_list(url):
                 python_button = driver.find_element_by_id(constants.category_page_show_more_button_id)
             except ElementNotInteractableException as e:
                 break
-
         soup=BeautifulSoup(driver.page_source, 'lxml')
         productDivs = soup.find('ul', attrs={'id' : constants.category_page_app_matrix_id})
         for href in productDivs.find_all('a'):
@@ -83,7 +82,11 @@ def get_app_data(input):
     # Get the information from the app page top section
     category_url = input['category_url']
     logger = input['logger']
-    child_url_list = get_category_apps_list(category_url)
+    child_url_list = []
+    try:
+        child_url_list = get_category_apps_list(category_url)
+    except NoSuchWindowException as e:
+        print(e)
     for url in child_url_list:
         child_html = urlopen(url)
         child_soup = BeautifulSoup(child_html, 'lxml')
@@ -91,9 +94,9 @@ def get_app_data(input):
             app_page_title = re.sub('<[^>]*>', '', str(child_soup.title))
             app_listing_id =  get_app_listing_id(url)
             app_details = parsing_util.parse_app_page_data(child_soup)
-            app_meta_details = ",".join([str(app_page_title),app_listing_id,url])
+            app_meta_details = "~".join([str(app_page_title),app_listing_id,url])
             app_overview_details = get_app_overview_details(app_listing_id)
-            final_app_details = ",".join([app_meta_details, app_details, app_overview_details])
+            final_app_details = "~".join([app_meta_details, app_details, app_overview_details])
             write_app_details_to_file(final_app_details, logger)
 
 def initialize_output_file():
