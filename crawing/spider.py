@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 from selenium import webdriver
-from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
+from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException, NoSuchWindowException
 
 import time
 import parsing.app_page_parse as parsing_util
@@ -54,7 +54,6 @@ def get_category_apps_list(url):
                 python_button = driver.find_element_by_id(constants.category_page_show_more_button_id)
             except ElementNotInteractableException as e:
                 break
-
         soup=BeautifulSoup(driver.page_source, 'lxml')
         productDivs = soup.find('ul', attrs={'id' : constants.category_page_app_matrix_id})
         for href in productDivs.find_all('a'):
@@ -83,7 +82,11 @@ def get_app_data(input):
     # Get the information from the app page top section
     category_url = input['category_url']
     logger = input['logger']
-    child_url_list = get_category_apps_list(category_url)
+    child_url_list = []
+    try:
+        child_url_list = get_category_apps_list(category_url)
+    except NoSuchWindowException as e:
+        print(e)
     for url in child_url_list:
         child_html = urlopen(url)
         child_soup = BeautifulSoup(child_html, 'lxml')
