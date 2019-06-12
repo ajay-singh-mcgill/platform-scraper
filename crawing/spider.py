@@ -17,6 +17,8 @@ import logging
 from multiprocessing.dummy import Pool as ThreadPool
 import os
 
+counter = 0
+
 def get_reviews_data(url):
     try:
         driver = webdriver.Firefox()
@@ -90,28 +92,36 @@ def get_app_data(input):
     except NoSuchWindowException as e:
         print(e)
     print(category_url, ":", child_url_list.__sizeof__())
-    for url in child_url_list:
-        child_html = urlopen(url)
-        child_soup = BeautifulSoup(child_html, 'lxml')
-        if child_soup:
-            app_page_title = re.sub('<[^>]*>', '', str(child_soup.title))
-            app_listing_id =  get_app_listing_id(url)
-            app_details = parsing_util.parse_app_page_data(child_soup)
-            app_meta_details = "~".join([str(app_page_title),app_listing_id,url])
-            app_overview_details = get_app_overview_details(app_listing_id)
-            final_app_details = "~".join([app_meta_details, app_details, app_overview_details])
-            write_app_details_to_file(final_app_details, logger)
+    if child_url_list:
+        for url in child_url_list:
+            child_html = urlopen(url)
+            child_soup = BeautifulSoup(child_html, 'lxml')
+            if child_soup:
+                app_page_title = re.sub('<[^>]*>', '', str(child_soup.title))
+                app_listing_id =  get_app_listing_id(url)
+                app_details = parsing_util.parse_app_page_data(child_soup)
+                app_meta_details = "~".join([str(app_page_title),app_listing_id,url])
+                app_overview_details = get_app_overview_details(app_listing_id)
+                final_app_details = "~".join([app_meta_details, app_details, app_overview_details])
+                write_app_details_to_file(final_app_details, logger)
+    else:
+        print("No children apps found for the category: "+input)
 
 def initialize_output_file():
     filename =str(datetime.datetime.now())+".csv"
-    logger = initialize_logger(filename)
-    os.environ['output_file'] = filename
-    f = open(filename, 'w')
+    filepath = "../data/"+filename
+    logger = initialize_logger(filepath)
+    os.environ['output_file'] = filepath
+    f = open(filepath, 'w')
     f.write(constants.output_file_header)
     f.close()
     return logger
 
 def write_app_details_to_file(output_line, logger):
+    global counter
+    counter = counter + 1
+    if counter%10 == 0:
+        print(str(datetime.datetime.now())+"----->"+str(counter))
     if logger:
         logger.info(output_line)
 
