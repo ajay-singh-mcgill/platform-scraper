@@ -13,6 +13,7 @@ developer_list = utils.getDeveloperDataFiles(all_files, 'App AppExchange Data')
 final_list = utils.sortDeveloperFileNamesByDate(developer_list)
 overall_stats = []
 
+
 for meta in final_list:
     data = pd.read_csv(filepath_or_buffer=meta['filename'], sep=",", error_bad_lines=False)
     provider_frequency_map = data['Provider Name'].value_counts()
@@ -35,6 +36,8 @@ for meta in final_list:
     except KeyError as e:
         print(e)
         continue
+    number_of_apps = data.shape[0]
+    salesforce_count = 0
     for key in salesforce_developers:
         salesforce_count+= provider_frequency_map[key]
     unique_providers_number = len(data['Provider Name'].unique())
