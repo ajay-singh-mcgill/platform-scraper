@@ -20,3 +20,4 @@ output_file_header = "app_title~ listing_id~ url~ price~ number_of_reviews~ revi
                      "other_system_requirements~ version~ first_release~ languages~ " \
                      "developer_founded~ developer_website~ developer_email~ developer_phone~ developer_name~ " \
                      "developer_location~ developer_detail\n"
+

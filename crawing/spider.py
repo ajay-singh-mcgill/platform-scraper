@@ -1,6 +1,11 @@
 import datetime
 
-import constants
+import sys
+import os
+
+sys.path.append(os.getcwd())
+from constants import page_load_wait_time, category_url_dict, app_overview_tab_base_url, output_file_header, \
+    category_page_show_more_button_id, category_page_app_matrix_id
 
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -15,14 +20,13 @@ import re
 import logging
 
 from multiprocessing.dummy import Pool as ThreadPool
-import os
 
 counter = 0
 
 def get_reviews_data(url):
     try:
         driver = webdriver.Firefox()
-        driver.implicitly_wait(constants.page_load_wait_time)
+        driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
         python_button = driver.find_element_by_id('tab-default-2__item')
         while python_button:
@@ -48,18 +52,18 @@ def get_category_apps_list(url):
     app_url_list = []
     try:
         driver = webdriver.Firefox()
-        driver.implicitly_wait(constants.page_load_wait_time)
+        driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
-        python_button = driver.find_element_by_id(constants.category_page_show_more_button_id)
+        python_button = driver.find_element_by_id(category_page_show_more_button_id)
         while python_button:
             try:
                 python_button.click()
-                time.sleep(constants.page_load_wait_time)
-                python_button = driver.find_element_by_id(constants.category_page_show_more_button_id)
+                time.sleep(page_load_wait_time)
+                python_button = driver.find_element_by_id(category_page_show_more_button_id)
             except ElementNotInteractableException as e:
                 break
         soup=BeautifulSoup(driver.page_source, 'lxml')
-        productDivs = soup.find('ul', attrs={'id' : constants.category_page_app_matrix_id})
+        productDivs = soup.find('ul', attrs={'id' : category_page_app_matrix_id})
         for href in productDivs.find_all('a'):
             app_url_list.append(href['href'])
         return app_url_list
@@ -74,7 +78,7 @@ def get_app_listing_id(url):
 def get_app_overview_details(app_listing_id):
     # Get the information for the overview tab in the app page by making a GET call
     if app_listing_id:
-        child_overview_url = constants.app_overview_tab_base_url+app_listing_id
+        child_overview_url = app_overview_tab_base_url+app_listing_id
         child_overview_html = urlopen(child_overview_url)
         child_overview_soup = BeautifulSoup(child_overview_html, 'lxml')
         app_overview_details = parsing_util.parse_app_page_overview_tab(child_overview_soup)
@@ -109,11 +113,11 @@ def get_app_data(input):
 
 def initialize_output_file():
     filename =str(datetime.datetime.now())+".csv"
-    filepath = "../data/"+filename
+    filepath = "data/"+filename
     logger = initialize_logger(filepath)
     os.environ['output_file'] = filepath
     f = open(filepath, 'w')
-    f.write(constants.output_file_header)
+    f.write(output_file_header)
     f.close()
     return logger
 
@@ -136,7 +140,7 @@ def initialize_logger(filename):
     return logger
 
 if __name__ == '__main__':
-    category_url_list = constants.category_url_dict.values()
+    category_url_list = category_url_dict.values()
     pool = ThreadPool(4)
     logger = initialize_output_file()
     input_list = [{'category_url': url, 'logger': logger} for url in category_url_list]
