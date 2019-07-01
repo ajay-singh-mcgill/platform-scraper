@@ -2,6 +2,7 @@ import datetime
 
 import sys
 import os
+from selenium.webdriver.firefox.options import Options
 
 sys.path.append(os.getcwd())
 from constants import page_load_wait_time, category_url_dict, app_overview_tab_base_url, output_file_header, \
@@ -24,7 +25,9 @@ from multiprocessing.dummy import Pool as ThreadPool
 counter = 0
 
 def get_reviews_data(url):
-    driver = webdriver.Firefox()
+    options = Options()
+    options.headless = True
+    driver = webdriver.Firefox(options=options)
     try:
         driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
@@ -50,7 +53,9 @@ def get_reviews_data(url):
 # Get all the child-apps url link from the category page
 def get_category_apps_list(url):
     app_url_list = []
-    driver = webdriver.Firefox()
+    options = Options()
+    options.headless = True
+    driver = webdriver.Firefox(options=options)
     try:
         driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
