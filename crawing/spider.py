@@ -4,7 +4,9 @@ import sys
 import os
 from selenium.webdriver.firefox.options import Options
 
-sys.path.append(os.getcwd())
+gecko_logpath = "/home/crawler/appexchange"
+
+sys.path.append(gecko_logpath)
 from constants import page_load_wait_time, category_url_dict, app_overview_tab_base_url, output_file_header, \
     category_page_show_more_button_id, category_page_app_matrix_id
 
@@ -24,10 +26,12 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 counter = 0
 
+gecko_logpath = gecko_logpath+"geckolog.log"
+
 def get_reviews_data(url):
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Firefox(options=options, log_path=gecko_logpath)
     try:
         driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
@@ -55,7 +59,7 @@ def get_category_apps_list(url):
     app_url_list = []
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Firefox(options=options, log_path=gecko_logpath)
     try:
         driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
@@ -118,7 +122,7 @@ def get_app_data(input):
 
 def initialize_output_file():
     filename =str(datetime.datetime.now())+".csv"
-    filepath = "data/"+filename
+    filepath = "/home/crawler/appexchange/data/"+filename
     logger = initialize_logger(filepath)
     os.environ['output_file'] = filepath
     f = open(filepath, 'w')
