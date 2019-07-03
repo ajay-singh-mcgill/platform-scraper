@@ -31,7 +31,7 @@ gecko_logpath = gecko_logpath+"geckolog.log"
 def get_reviews_data(url):
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(options=options, log_path=gecko_logpath)
+    driver = webdriver.Firefox(options=options, log_path=gecko_logpath, executable_path='/home/crawler/geckodriver')
     try:
         driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
@@ -59,7 +59,7 @@ def get_category_apps_list(url):
     app_url_list = []
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(options=options, log_path=gecko_logpath)
+    driver = webdriver.Firefox(options=options, log_path=gecko_logpath, executable_path='/home/crawler/geckodriver')
     try:
         driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
