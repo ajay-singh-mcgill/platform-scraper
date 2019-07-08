@@ -4,11 +4,10 @@ import sys
 import os
 from selenium.webdriver.firefox.options import Options
 
-gecko_logpath = "/home/crawler/appexchange"
+from constants import page_load_wait_time, category_url_dict, app_overview_tab_base_url, output_file_header, \
+    category_page_show_more_button_id, category_page_app_matrix_id, gecko_logpath, executable_path, data_folder_path
 
 sys.path.append(gecko_logpath)
-from constants import page_load_wait_time, category_url_dict, app_overview_tab_base_url, output_file_header, \
-    category_page_show_more_button_id, category_page_app_matrix_id
 
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -31,7 +30,7 @@ gecko_logpath = gecko_logpath+"geckolog.log"
 def get_reviews_data(url):
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(options=options, log_path=gecko_logpath, executable_path='/home/crawler/geckodriver')
+    driver = webdriver.Firefox(options=options, log_path=gecko_logpath, executable_path=executable_path)
     try:
         driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
@@ -59,7 +58,7 @@ def get_category_apps_list(url):
     app_url_list = []
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(options=options, log_path=gecko_logpath, executable_path='/home/crawler/geckodriver')
+    driver = webdriver.Firefox(options=options, log_path=gecko_logpath, executable_path=executable_path)
     try:
         driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
@@ -122,7 +121,7 @@ def get_app_data(input):
 
 def initialize_output_file():
     filename =str(datetime.datetime.now())+".csv"
-    filepath = "/home/crawler/appexchange/data/"+filename
+    filepath = data_folder_path+filename
     logger = initialize_logger(filepath)
     os.environ['output_file'] = filepath
     f = open(filepath, 'w')

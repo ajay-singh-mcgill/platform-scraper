@@ -21,3 +21,17 @@ output_file_header = "app_title~ listing_id~ url~ price~ number_of_reviews~ revi
                      "developer_founded~ developer_website~ developer_email~ developer_phone~ developer_name~ " \
                      "developer_location~ developer_detail\n"
 
+gecko_logpath = "/Users/ajaysingh/PycharmProjects/platform_scraper"
+executable_path = '/usr/local/bin/geckodriver'
+data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/data/"
+
+#gecko_logpath = ""
+#executable_path = ""
+#data_folder_path = ""
+
+microsoft_category_url_dict = {
+    "analytics": "https://appsource.microsoft.com/en-us/marketplace/apps?category=iot",
+}
+microsoft_data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/microsoft_data/"
+microsoft_base_url = 'https://appsource.microsoft.com'
+
