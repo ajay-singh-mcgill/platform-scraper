@@ -163,7 +163,10 @@ def parse_app_page_data(soup):
     else:
         latest_release = ""
     categories_raw = str(soup.find('div', attrs={'class': 'appx-headline-details-categories-details'}))
-    categories = re.search('<strong>(.*)</strong>', categories_raw).group(1)
+    if re.search('<strong>(.*)</strong>', categories_raw):
+        categories = re.search('<strong>(.*)</strong>', categories_raw).group(1)
+    else:
+        categories = []
     descrition_raw = str(soup.find('div', attrs={'class':'appx-detail-section-description'}))
     description = re.search('<p>(.*)</p>', descrition_raw).group(1)
     line_entry = "~".join([str(price), str(number_of_reviews), str(review_stars), str(listed_on)

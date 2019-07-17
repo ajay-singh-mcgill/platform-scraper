@@ -21,17 +21,36 @@ output_file_header = "app_title~ listing_id~ url~ price~ number_of_reviews~ revi
                      "developer_founded~ developer_website~ developer_email~ developer_phone~ developer_name~ " \
                      "developer_location~ developer_detail\n"
 
+# Dev Environment
 gecko_logpath = "/Users/ajaysingh/PycharmProjects/platform_scraper"
 executable_path = '/usr/local/bin/geckodriver'
 data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/data/"
+microsoft_data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/microsoft_data/"
 
-#gecko_logpath = ""
-#executable_path = ""
-#data_folder_path = ""
+#Prod Environment
+#gecko_logpath = "/home/crawler/appexchange"
+#executable_path = "/home/crawler/geckodriver"
+#data_folder_path = "/home/crawler/appexchange/data/"
+#microsoft_data_folder_path = "/home/crawler/appexchange/microsoft_data/"
 
 microsoft_category_url_dict = {
-    "analytics": "https://appsource.microsoft.com/en-us/marketplace/apps?category=iot",
+    "analytics": "https://appsource.microsoft.com/en-us/marketplace/apps?category=analytics",
+    "sales": "https://appsource.microsoft.com/en-us/marketplace/apps?category=sales",
+    "productivity": "https://appsource.microsoft.com/en-us/marketplace/apps?category=productivity",
+    "operations": "https://appsource.microsoft.com/en-us/marketplace/apps?category=operations",
+    "marketing": "https://appsource.microsoft.com/en-us/marketplace/apps?category=marketing",
+    "iot": "https://appsource.microsoft.com/en-us/marketplace/apps?category=iot",
+    "finance": "https://appsource.microsoft.com/en-us/marketplace/apps?category=finance",
+    "customer-service": "https://appsource.microsoft.com/en-us/marketplace/apps?category=customer-service",
+    "it-admin": "https://appsource.microsoft.com/en-us/marketplace/apps?category=it-admin",
+    "human-resources": "https://appsource.microsoft.com/en-us/marketplace/apps?category=human-resources",
+    "collaboration": "https://appsource.microsoft.com/en-us/marketplace/apps?category=collaboration",
+    "artifical-intelligence": "https://appsource.microsoft.com/en-us/marketplace/apps?category=artifical-intelligence",
 }
-microsoft_data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/microsoft_data/"
+
 microsoft_base_url = 'https://appsource.microsoft.com'
+microsoft_app_price_url = 'https://appsource.microsoft.com/view/appPricing/us?version=2017-04-24'
+microsoft_file_header= "~".join(['industries','products_affected', 'categories', 'publisher', 'version', 'updated_on', 'heading',
+                                 'review_count', 'rating','short_description', 'description', 'add_in_capabilities',
+                                 'acquire_using', 'url', 'app_id', "\n"])
 

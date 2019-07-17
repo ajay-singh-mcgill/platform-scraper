@@ -1,6 +1,5 @@
 import bleach
 import re
-import os
 
 def parse_app_details(soup):
     meta_raw = soup.find('div', attrs= {'class': 'metaDetails'})
@@ -65,10 +64,22 @@ def parse_app_details(soup):
     else: short_description= "NA"
     description = bleach.clean(str(description_raw), strip=True, strip_comments=True)
     add_in_capabilities = bleach.clean(str(add_in_capabilities_raw), strip=True, strip_comments=True)
-    print("\n".join([str(final_products), str(final_categories), publisher, version, updated_on, heading, review_count, rating,
-                     short_description, description, add_in_capabilities, str(final_acquire_using)]))
-    print("\n\n\n\n\n\n")
+    publisher = publisher.replace("\n", "")
+    version = version.replace("\n", "")
+    heading = heading.replace("\n", "")
+    short_description = short_description.replace("\n", "")
+    description = description.replace("\n", "")
+    add_in_capabilities = add_in_capabilities.replace("\n", "")
 
+    final_industries = []
+    industries = soup.find("div", attrs= {'class': "cell industriesSupported"})
+    if industries is not None:
+        data = str(industries).split("title=\"")
+        for d in data[1:]:
+            final_industries.append(d.split("\">")[0])
+    final_data = "~".join([str(final_industries), str(final_products), str(final_categories), publisher, version, updated_on, heading, review_count, rating,
+                     short_description, description, add_in_capabilities, str(final_acquire_using)])
+    return final_data
 
 
 
