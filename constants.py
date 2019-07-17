@@ -22,16 +22,16 @@ output_file_header = "app_title~ listing_id~ url~ price~ number_of_reviews~ revi
                      "developer_location~ developer_detail\n"
 
 # Dev Environment
-gecko_logpath = "/Users/ajaysingh/PycharmProjects/platform_scraper"
-executable_path = '/usr/local/bin/geckodriver'
-data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/data/"
-microsoft_data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/microsoft_data/"
+#gecko_logpath = "/Users/ajaysingh/PycharmProjects/platform_scraper"
+#executable_path = '/usr/local/bin/geckodriver'
+#data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/data/"
+#microsoft_data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/microsoft_data/"
 
 #Prod Environment
-#gecko_logpath = "/home/crawler/appexchange"
-#executable_path = "/home/crawler/geckodriver"
-#data_folder_path = "/home/crawler/appexchange/data/"
-#microsoft_data_folder_path = "/home/crawler/appexchange/microsoft_data/"
+gecko_logpath = "/home/crawler/appexchange"
+executable_path = "/home/crawler/geckodriver"
+data_folder_path = "/home/crawler/appexchange/data/"
+microsoft_data_folder_path = "/home/crawler/appexchange/microsoft_data/"
 
 microsoft_category_url_dict = {
     "analytics": "https://appsource.microsoft.com/en-us/marketplace/apps?category=analytics",

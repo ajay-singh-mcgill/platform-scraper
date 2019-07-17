@@ -5,7 +5,8 @@ import os
 from selenium.webdriver.firefox.options import Options
 
 # This needs to be updated for every environment
-sys.path.append("/Users/ajaysingh/PycharmProjects/platform_scraper")
+#sys.path.append("/Users/ajaysingh/PycharmProjects/platform_scraper")
+sys.path.append('/home/crawler/appexchange')
 
 from constants import page_load_wait_time, category_url_dict, app_overview_tab_base_url, output_file_header, \
     category_page_show_more_button_id, category_page_app_matrix_id, gecko_logpath, executable_path, data_folder_path

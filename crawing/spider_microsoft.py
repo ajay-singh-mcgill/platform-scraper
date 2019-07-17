@@ -6,7 +6,8 @@ import os
 import requests
 
 # This needs to be updated for every environment
-sys.path.append("/Users/ajaysingh/PycharmProjects/platform_scraper")
+#sys.path.append("/Users/ajaysingh/PycharmProjects/platform_scraper")
+sys.path.append('/home/crawler/appexchange')
 
 from constants import microsoft_category_url_dict, microsoft_file_header, microsoft_data_folder_path, \
     microsoft_base_url, microsoft_app_price_url
