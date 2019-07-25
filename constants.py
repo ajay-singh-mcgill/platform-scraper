@@ -5,8 +5,9 @@ category_url_dict = {
     'erp': 'https://appexchange.salesforce.com/category/erp',
     'analytics': 'https://appexchange.salesforce.com/category/analytics',
     'collaboration': 'https://appexchange.salesforce.com/category/collaboration',
-    'customer_service': 'https://appexchange.salesforce.com/category/service',
-    'finance': 'https://appexchange.salesforce.com/category/finance'
+    'customer_service': 'https://appexchange.salesforce.com/category/customer-service',
+    'finance': 'https://appexchange.salesforce.com/category/finance',
+    'sales': 'https://appexchange.salesforce.com/category/sales'
 }
 
 page_load_wait_time = 5
@@ -21,17 +22,21 @@ output_file_header = "app_title~ listing_id~ url~ price~ number_of_reviews~ revi
                      "developer_founded~ developer_website~ developer_email~ developer_phone~ developer_name~ " \
                      "developer_location~ developer_detail\n"
 
+salesforce_review_data_file_header = "url~ app_id~ review_data\n"
+
 # Dev Environment
 gecko_logpath = "/Users/ajaysingh/PycharmProjects/platform_scraper"
 executable_path = '/usr/local/bin/geckodriver'
 data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/data/"
 microsoft_data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/microsoft_data/"
+salesforce_review_data_folder = "/Users/ajaysingh/PycharmProjects/platform_scraper/review_data/salesforce/"
 
 #Prod Environment
 #gecko_logpath = "/home/crawler/appexchange"
 #executable_path = "/home/crawler/geckodriver"
 #data_folder_path = "/home/crawler/appexchange/data/"
 #microsoft_data_folder_path = "/home/crawler/appexchange/microsoft_data/"
+#salesforce_review_data_folder = "/home/crawler/appexchange/review_data/salesforce/"
 
 microsoft_category_url_dict = {
     "analytics": "https://appsource.microsoft.com/en-us/marketplace/apps?category=analytics",
@@ -53,4 +58,5 @@ microsoft_app_price_url = 'https://appsource.microsoft.com/view/appPricing/us?ve
 microsoft_file_header= "~".join(['industries','products_affected', 'categories', 'publisher', 'version', 'updated_on', 'heading',
                                  'review_count', 'rating','short_description', 'description', 'add_in_capabilities',
                                  'acquire_using', 'url', 'app_id', "\n"])
+
 

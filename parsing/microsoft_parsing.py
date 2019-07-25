@@ -47,7 +47,10 @@ def parse_app_details(soup):
     if categories:
         for cat in categories[1:]:
             final_categories.append(cat.split(">")[0].strip("\""))
-    heading = re.findall('itemprop="name">(.*)</h1>', str(app_header_raw))[0]
+    if re.findall('itemprop="name">(.*)</h1>', str(app_header_raw)):
+        heading = re.findall('itemprop="name">(.*)</h1>', str(app_header_raw))[0]
+    else:
+        heading = "NA"
     review_count = re.findall('-->(.*)<!--', str(rating_raw))
     if review_count:
         review_count = review_count[0]
