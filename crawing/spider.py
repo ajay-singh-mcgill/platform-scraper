@@ -5,8 +5,8 @@ import os
 from selenium.webdriver.firefox.options import Options
 
 # This needs to be updated for every environment
-sys.path.append("/Users/ajaysingh/PycharmProjects/platform_scraper")
-# sys.path.append("/home/crawler/appexchange/")
+#sys.path.append("/Users/ajaysingh/PycharmProjects/platform_scraper")
+sys.path.append("/home/crawler/appexchange/")
 
 from constants import page_load_wait_time, category_url_dict, app_overview_tab_base_url, output_file_header, \
     category_page_show_more_button_id, category_page_app_matrix_id, gecko_logpath, executable_path, data_folder_path
@@ -33,17 +33,21 @@ gecko_logpath = gecko_logpath+"geckolog.log"
 
 # Get all the child-apps url link from the category page
 def get_category_apps_list(url):
+    print('inside the func')
     app_url_list = []
     options = Options()
     options.headless = True
+    print(options)
     driver = webdriver.Firefox(options=options, log_path=gecko_logpath, executable_path=executable_path)
     try:
+        print(url)
         driver.implicitly_wait(page_load_wait_time)
         driver.get(url)
         python_button = driver.find_element_by_id(category_page_show_more_button_id)
         while python_button:
             try:
                 python_button.click()
+                print('clicking')
                 time.sleep(page_load_wait_time)
                 python_button = driver.find_element_by_id(category_page_show_more_button_id)
             except ElementNotInteractableException as e:
@@ -78,6 +82,7 @@ def get_app_data(input):
     category_url = input['category_url']
     logger = input['logger']
     try:
+        print('Getting child list')
         child_url_list = get_category_apps_list(category_url)
     except NoSuchWindowException as e:
         print("Error in getting child list for the category: "+category_url)
@@ -126,7 +131,9 @@ def initialize_logger(filename):
     return logger
 
 if __name__ == '__main__':
+    print('Starting')
     category_url_list = category_url_dict.values()
+    print(category_url_list)
     pool = ThreadPool(4)
     logger = initialize_output_file()
     input_list = [{'category_url': url, 'logger': logger} for url in category_url_list]
