@@ -25,11 +25,11 @@ output_file_header = "app_title~ listing_id~ url~ price~ number_of_reviews~ revi
 salesforce_review_data_file_header = "url~ app_id~ review_data\n"
 
 # Dev Environment
-#gecko_logpath = "/Users/ajaysingh/PycharmProjects/platform_scraper"
-#executable_path = '/usr/local/bin/geckodriver'
-#data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/data/"
-#microsoft_data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/microsoft_data/"
-#salesforce_review_data_folder = "/Users/ajaysingh/PycharmProjects/platform_scraper/review_data/salesforce/"
+# gecko_logpath = "/Users/ajaysingh/PycharmProjects/platform_scraper"
+# executable_path = '/usr/local/bin/geckodriver'
+# data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/data/"
+# microsoft_data_folder_path = "/Users/ajaysingh/PycharmProjects/platform_scraper/microsoft_data/"
+# salesforce_review_data_folder = "/Users/ajaysingh/PycharmProjects/platform_scraper/review_data/salesforce/"
 
 #Prod Environment
 gecko_logpath = "/home/crawler/appexchange"

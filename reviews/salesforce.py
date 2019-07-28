@@ -4,7 +4,8 @@ import sys
 import os
 from selenium.webdriver.firefox.options import Options
 
-sys.path.append("/Users/ajaysingh/PycharmProjects/platform_scraper")
+# sys.path.append("/Users/ajaysingh/PycharmProjects/platform_scraper")
+sys.path.append("/home/crawler/appexchange/")
 
 from constants import page_load_wait_time, category_url_dict, salesforce_review_data_file_header, \
     category_page_show_more_button_id, category_page_app_matrix_id, gecko_logpath, executable_path, \
@@ -12,7 +13,6 @@ from constants import page_load_wait_time, category_url_dict, salesforce_review_
 
 sys.path.append(gecko_logpath)
 
-from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 from selenium import webdriver
@@ -70,7 +70,6 @@ def get_reviews_data(url, app_id):
                  'review_date': review_date,
                  'review_title': review_title,
                  'review_description': review_description}
-                print(review_data)
                 final_reviews.append(review_data)
         final_data = "~".join([url, app_id, str(final_reviews)])
         return final_data
@@ -120,11 +119,9 @@ def get_app_data(input):
         print("Error in getting child list for the category: "+category_url)
         print(e)
     if child_url_list:
-        print(category_url, ":", len(child_url_list))
         child_url_list = set(child_url_list)
         print(category_url, ":", len(child_url_list))
         for url in child_url_list:
-            print(url)
             app_listing_id = get_app_listing_id(url)
             review_data = get_reviews_data(url, app_listing_id)
             write_app_details_to_file(review_data, logger)
