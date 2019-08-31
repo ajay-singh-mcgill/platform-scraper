@@ -70,11 +70,14 @@ def get_app_overview_details(app_listing_id):
     # Get the information for the overview tab in the app page by making a GET call
     if app_listing_id:
         child_overview_url = app_overview_tab_base_url+app_listing_id
-        child_overview_html = urlopen(child_overview_url)
-        child_overview_soup = BeautifulSoup(child_overview_html, 'lxml')
-        app_overview_details = parsing_util.parse_app_page_overview_tab(child_overview_soup)
-        return app_overview_details
-    else: return None
+        try:
+            child_overview_html = urlopen(child_overview_url)
+            child_overview_soup = BeautifulSoup(child_overview_html, 'lxml')
+            app_overview_details = parsing_util.parse_app_page_overview_tab(child_overview_soup)
+            return app_overview_details
+        except Exception as e:
+            return ""
+    else: return ""
 
 # Get the app specific data and the data in the overview tab of the app page
 def get_app_data(input):
